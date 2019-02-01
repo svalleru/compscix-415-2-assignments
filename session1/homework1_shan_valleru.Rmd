@@ -14,4 +14,67 @@ My Github repository for my assignments can be found at this URL: [https://githu
 ```{r load_packages, warning=FALSE, message=FALSE}
 library(mdsr)
 library(tidyverse)
+data("WorldCities")
+?WorldCities
+glimpse(WorldCities)
+world_cities <- head(WorldCities, 200) # load first 200 rows
+country_col <- world_cities$country
+unique(country_col)
+
+cat("Number of observations:", nrow(WorldCities))
+cat("\n")
+cat("Number of variables:", length(names(WorldCities)))
+cat("\n")
+cat("Variable names:", names(WorldCities), sep="\n")
+# QUESTION 1: How many observations and variables are there in this data set? What are
+# some of the variable names? Type up your answer in your document using complete sentences
+# ANSWER: 
+# Number of observations: 23, 018
+# Number of variables: 10
+# Variable names: code, name, latitude, longitude, country, countryRegion, population, regionCode, region, date
 ```
+
+```{r}
+# QUESTION 2: There is a column called region in the data set. Can you extract this and show
+# only the unique values?
+?select
+WorldCities %>% select(region) %>% head(5)
+regions <- WorldCities %>% select(region)
+unique_regions <- regions %>% unique()
+unique_regions
+```
+
+```{r}
+# QUESTION 3: Can you extract and show the unique entries from the country column in
+# WorldCities using one line of code and two %>% operators? The output will look like this:
+## country
+## 1 AD
+## 3 AE
+## 15 AF
+## 65 AG
+## 66 AI
+## 67 AL
+## 87 AM
+## 104 AO
+## 131 AR
+
+WorldCities %>% select(country) %>% unique()
+
+WorldCities %>% ggplot(aes(x = population)) + 
+  geom_histogram()
+WorldCities %>% ggplot(aes(x = population)) + 
+  geom_histogram() +
+  xlab('City Population')
+```
+
+```{r}
+# QUESTION 4: Make one more histogram of the population and add a new x-label, a new ylabel, 
+# a new title (use ggtitle('my title')), and change the theme of the plot using theme_bw().
+WorldCities %>% ggplot(aes(x = population)) + 
+  geom_histogram() +
+  xlab('City Population') +
+  ylab('City Population Count') +
+  ggtitle('Population Histogram') +
+  theme_bw()
+```
+
