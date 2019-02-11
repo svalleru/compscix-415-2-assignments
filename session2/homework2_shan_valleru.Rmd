@@ -68,14 +68,14 @@ Note: because the mpg data is from the years 1999 and 2008, `year` variable is c
 
 ```{r}
 # Map a continuous variable to color, size, and shape. How do these aesthetics behave differently for categorical vs. continuous variables?
-
-ggplot(data = mpg, mapping = aes(x = cty, y = cyl)) +
+gg <- ggplot(data = mpg, mapping = aes(x = cty, y = cyl))
+gg +
   geom_point(mapping = aes(color = cyl))
 
-ggplot(data = mpg, mapping = aes(x = cty, y = cyl)) +
+gg +
   geom_point(mapping = aes(size = cyl))
 
-# ggplot(data = mpg, mapping = aes(x = cty, y = cyl)) +
+# gg +
 #  geom_point(mapping = aes(shape = cyl))
 #Error: A continuous variable can not be mapped to shape
 ```
@@ -178,11 +178,13 @@ They are same. `data` and `mapping` are set in first layer(`ggplot`) in the firs
 
 Recreate the R code necessary to generate the following graphs.
 ```{r}
-ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+gg <- ggplot(data = mpg, mapping = aes(x = displ, y = hwy))
+
+gg + 
   geom_point() + 
   geom_smooth(se = FALSE)
 
-ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+gg + 
   geom_point() +
   geom_smooth(aes(group = drv), se = FALSE)
 
@@ -190,15 +192,15 @@ ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) +
   geom_point() + 
   geom_smooth(se = FALSE)
 
-ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+gg + 
   geom_point(aes(color = drv)) + 
   geom_smooth(se = FALSE)
 
-ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+gg + 
   geom_point(aes(color = drv)) +
   geom_smooth(aes(linetype = drv), se = FALSE)
 
-ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+gg + 
   geom_point(size = 3, colour = "white") + 
   geom_point(aes(colour = drv))
 ```
