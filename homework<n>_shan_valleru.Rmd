@@ -1,0 +1,14 @@
+---
+title: "COMPSCIX 415.2 Homework 2"
+author: "Shan Valleru"
+date: "2/10/2019"
+output: 
+  html_document:
+    self_contained: true
+---
+
+My Github repository for my assignments can be found at this URL: [https://github.com/svalleru/compscix-415-2-assignments](https://github.com/svalleru/compscix-415-2-assignments)
+
+```{r chunk_name, warning=FALSE, message=FALSE}
+
+```
