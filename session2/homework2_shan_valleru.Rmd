@@ -218,4 +218,29 @@ Answer these questions:
 1. Look at the data graphics at the following link: What is a Data Scientist. Please briefly critique the
 designer’s choices. What works? What doesn’t work? What would you have done differently?
 
+What works?
 
+I agree that the data explosion and significant increase in processing power are real and are orthogonal to each other. The worls is more digital than ever, as more people go digital, the amount of data/signals one can collect will only increase and so is the need to make sense of this data and glean intelligent insights. I think, cloud computing and (big) data tools will help with the later.
+
+I also think that the demand for data scientists(and variants) will be higher that the supply for the next 6-7 years because, some schools are just starting to offer specialized data science training and will take time for others to follow.
+
+I think data scientists will open up new possibilities that create demand for more data scientists.
+
+I agree that the lack of training and resources are the biggest obstacles for DS adoption in organizations 
+
+What doesn't work?
+
+The graphic alludes that business intelligence people can't be a good data scientist, i am not sure about that.
+I think the tools of the trade are not so hard to learn and a BI person can learn them with some effort.
+
+I don't think the distinction between big data science and normal data science is distinct enough to make them two separate categories.
+
+It doesn't clearly define what a data scientist is
+
+What would i have done differently?
+
+I think, computer science professionals are one of the best sources for data scientists -- the graphic doesn't have any data on this. I'd have added that.
+
+Also, the graphic doesn't show any data on machine learning/prediction work that a data scientist does, i think, it portrays data scients as someone who just analyses past data. I think, i'd have started with a clear definition of a data scientist first.
+
+I'd have added some information on how domain knowledge correlates with data science
