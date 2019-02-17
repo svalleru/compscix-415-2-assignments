@@ -1,0 +1,187 @@
+---
+title: "COMPSCIX 415.2 Homework 3"
+author: "Shan Valleru"
+date: "2/17/2019"
+output: 
+  html_document:
+    self_contained: true
+editor_options: 
+  chunk_output_type: console
+---
+
+My Github repository for my assignments can be found at this URL: [https://github.com/svalleru/compscix-415-2-assignments](https://github.com/svalleru/compscix-415-2-assignments)
+
+```{r chunk_name, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(nycflights13)
+```
+
+Section 3.8.1: all exercises
+```{r}
+# 1. What is the problem with this plot? How could you improve it?
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
+  geom_point()
+```
+
+There's lot of overlap of the dots. Setting some jitter can fix that.
+```{r}
+mpg_gg <- ggplot(mpg, mapping = aes(x = cty, y = hwy))
+mpg_gg +
+  geom_jitter()
+```
+
+2. What parameters to `geom_jitter()` control the amount of jittering?
+```{r}
+?geom_jitter
+```
+
+`width`	and `height`
+
+3. Compare and contrast geom_jitter() with geom_count().
+```{r}
+mpg_gg +
+  geom_jitter()
+
+mpg_gg +
+  geom_count()
+```
+
+`geom_jitter` adds jitter to overlapping points where as `geom_count` makes the overlapping points look bigger on the plot
+
+4. What’s the default position adjustment for `geom_boxplot()`? Create a visualisation of the `mpg` dataset that demonstrates it.
+```{r}
+?geom_boxplot
+# Boxplots are automatically dodged when any aesthetic is a factor
+# p + geom_boxplot(aes(colour = drv))
+
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+  geom_boxplot(position = "dodge") +
+  coord_flip()
+```
+
+Default postion adjustment is `dodge`
+
+Section 3.9.1: #2 and #4 only
+
+2. What does `labs()` do? Read the documentation.
+```{r}
+?labs
+# example(labs)
+```
+
+It lets you add title, subtitle, caption, tag, label to the graphs
+
+4. What does the plot below tell you about the relationship between city and highway mpg? Why is `coord_fixed()` important? What does `geom_abline()` do?
+```{r}
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
+  geom_point() + 
+  geom_abline() +
+  coord_fixed()
+```
+
+The plot shows that the highway mileage is better than the city mileage-- meaning, better fuel efficiency on highways that in the cities.
+
+Section 4.4: #1 and #2 only
+
+1. Why does this code not work?
+```{r}
+my_variable <- 10
+# my_varıable
+#> Error in eval(expr, envir, enclos): object 'my_varıable' not found
+```
+
+There's a typo in the second variable. It should've been `my_variable`
+
+2. Tweak each of the following R commands so that they run correctly:
+```{r}
+library(tidyverse)
+
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+# i don't see any issues with this!!
+
+# fliter(mpg, cyl = 8)
+# typo in the command; the following will work
+filter(mpg, cyl == 8)
+
+# filter(diamond, carat > 3)
+# typo in the data name
+filter(diamonds, carat > 3)
+```
+
+Section 5.2.4: #1, #3 and #4 only. You will need to install the `nycflights13` package and use the `flights` data.
+
+1. Find all flights that
+```{r}
+# Had an arrival delay of two or more hours
+flights %>% filter(arr_delay >= 120)
+
+# Flew to Houston (IAH or HOU)
+flights %>% filter(dest %in% c("IAH", "HOU"))
+
+# Were operated by United, American, or Delta
+flights %>% filter(carrier %in% c("UA", "AA", "DL"))
+
+# Departed in summer (July, August, and September)
+flights %>% filter(month %in% 7:9)
+
+# Arrived more than two hours late, but didn’t leave late
+flights %>% filter(arr_delay > 120 & dep_delay <= 0)
+
+# Were delayed by at least an hour, but made up over 30 minutes in flight
+flights %>% filter(dep_delay > 60 & dep_delay - arr_delay > 30)
+
+# Departed between midnight and 6am (inclusive)
+flights %>% filter(dep_time %in% 0:600)
+```
+
+3. How many flights have a missing `dep_time`? What other variables are missing? What might these rows represent?
+```{r}
+sum(is.na(flights$dep_time))
+summary(flights)
+```
+
+variable_name missing_count
+
+`dep_time`      `8255`
+
+`dep_delay`     `8255`
+
+`arr_time`      `8713`
+
+`arr_delay`     `9430`
+
+`air_time`      `9430`
+
+4. Why is `NA ^ 0` not missing? Why is `NA | TRUE` not missing? Why is `FALSE & NA` not missing? Can you figure out the general rule? (`NA * 0` is a tricky counterexample!)
+
+Anything power 0 is 1, so, `NA ^ 0` always evaluates to 1
+`NA | TRUE` always evaluates to `TRUE` because at least one of the operator is `TRUE`
+`FALSE & NA` always evaluates to `FALSE` because at least one of the operator is `FALSE`
+
+Section 5.4.1: #1 and #3 only
+
+1. Brainstorm as many ways as possible to select `dep_time`, `dep_delay`, `arr_time`, and `arr_delay` from `flights`.
+```{r}
+my_variables <- c("dep_time", "dep_delay", "arr_time", "arr_delay")
+for (my_var in my_variables){
+  print(flights %>% select(my_var))
+}
+
+for (my_var in my_variables){
+  print(select(flights, my_var))
+}
+
+select(flights, one_of(my_variables))
+select(flights, my_variables)
+
+flights %>% select(my_variables)
+```
+
+3. What does the `one_of()` function do? Why might it be helpful in conjunction with this vector?
+```{r}
+vars <- c("year", "month", "day", "dep_delay", "arr_delay")
+select(flights, one_of(vars))
+```
+
+It's making `select` pick the rows that are in the vector `vars`
