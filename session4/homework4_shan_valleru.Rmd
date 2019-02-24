@@ -217,3 +217,13 @@ tible %>%
 # If FALSE, keeps the old column and creates a new variable.
 ```
 
+**Baby Names**
+```{r}
+file_path <- "/Users/svalleru/Desktop/UCB/COMPSCIX415.2-003 - Intro to DS/compscix-415-2-assignments/session4/baby_names.txt"
+baby_names <- read_delim(file = file_path, delim = "|")
+glimpse(baby_names)
+new_file_path <- "/Users/svalleru/Desktop/UCB/COMPSCIX415.2-003 - Intro to DS/compscix-415-2-assignments/session4/baby_names_new.txt"
+write_delim(baby_names, delim = "^", path = new_file_path)
+new_baby_names <- read_delim(file = new_file_path, delim = "^")
+glimpse(new_baby_names)
+```
