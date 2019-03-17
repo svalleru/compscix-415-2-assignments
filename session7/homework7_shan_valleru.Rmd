@@ -1,0 +1,143 @@
+---
+title: "COMPSCIX 415.2 Homework 7"
+author: "Shan Valleru"
+date: "3/17/2019"
+output: 
+  html_document:
+    self_contained: true
+    toc: true
+    toc_float: true
+editor_options: 
+  chunk_output_type: console
+---
+
+My Github repository for my assignments can be found at this URL: [https://github.com/svalleru/compscix-415-2-assignments](https://github.com/svalleru/compscix-415-2-assignments)
+
+```{r chunk_name, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(broom)
+```
+
+# Exercise 1
+1.Load the train.csv dataset into R. How many observations and columns are there?
+```{r}
+file_path <- '/Users/svalleru/Desktop/UCB/COMPSCIX415.2-003 - Intro to DS/compscix-415-2-assignments/session7/train.csv'
+training_data <- read_csv(file = file_path)
+glimpse(training_data)
+```
+
+# Exercise 2
+1.Normally at this point you would spend a few days on EDA, but for this homework we will do some very basic EDA and get right to fitting some linear regression models.
+
+Our target will be `SalePrice`.
+
+  - Visualize the distribution of `SalePrice`.
+```{r}
+ggplot(data = training_data, mapping = aes(x = SalePrice)) +
+  geom_histogram(binwidth = 10000)
+```
+
+  - Visualize the covariation between `SalePrice` and `Neighborhood`.
+```{r}
+ggplot(data = training_data, mapping = aes(x = Neighborhood, y = SalePrice)) +
+  geom_boxplot() +
+  coord_flip()
+```
+
+  - Visualize the covariation between `SalePrice` and `OverallQual`.
+```{r}
+ggplot(data = training_data) + 
+  geom_boxplot(mapping = aes(x = reorder(OverallQual, SalePrice, FUN = median), y = SalePrice)) +
+  coord_flip()
+```
+
+# Exercise 3
+1.Our target is called `SalePrice`. First, we can fit a simple regression model consisting of only the intercept (the average of `SalePrice`). Fit the model and then use the broom package to
+
+  - take a look at the coefficient,
+  - compare the coefficient to the average value of `SalePrice`, and
+  - take a look at the R-squared.
+```{r}
+(sale_price_lm <- lm(formula = SalePrice ~ 1, data = training_data))
+# tidy(house_lm)
+mean(training_data$SalePrice, na.rm = TRUE)
+glance(sale_price_lm)
+```
+
+# Exercise 4
+Exercise 4
+1.Now fit a linear regression model using `GrLivArea`, `OverallQual`, and `Neighborhood` as the features. Don’t forget to look at  `data_description.txt` to understand what these variables mean. Ask **yourself** these questions before fitting the model:
+
+What kind of relationship will these features have with our target?
+Can the relationship be estimated linearly?
+Are these good features, given the problem we are trying to solve?
+After fitting the model, output the coefficients and the R-squared using the broom package.
+```{r}
+sale_price_lm <- lm(formula = SalePrice ~ GrLivArea + OverallQual + Neighborhood, data = training_data)
+tidy(sale_price_lm)
+glance(sale_price_lm)
+```
+
+Answer these questions:
+
+- How would you interpret the coefficients on `GrLivArea` and `OverallQual`?
+
+When all other features are constant, increase in one square feet area in `GrLivArea` increases `SalePrice` $55. 
+When all other features are constant, increase in 1 unit of `OverallQual` increases `SalePrice` by \$20951.
+  
+- How would you interpret the coefficient on `NeighborhoodBrkSide`?
+
+When all other features are constant, `SalePrice` in `NeighborhoodBrkSide` are on average \$13025 lower relative to those in `NeighborhoodBlmngtn`.
+
+- Are the features significant?
+
+`GrLivArea` and `OverallQual` are probably significamnt because, both have p-values less than 0.05. Other auto generated categorical variables are probably not.
+
+- Are the features practically significant?
+
+Yes
+
+- Is the model a good fit?
+
+Because, the adjusted R-squared is 0.787, i'd say, the model is a good fit.
+
+# Exercise 6
+1.One downside of the linear model is that it is sensitive to unusual values because the distance incorporates a squared term. Fit a linear model to the simulated data below (use `y` as the target and `x` as the feature), and look at the resulting coefficients and R-squared. Rerun it about 5-6 times to generate different simulated datasets. What do you notice about the model’s coefficient on `x` and the R-squared values?
+```{r}
+sim1a <- tibble(
+  x = rep(1:10, each = 3),
+  y = x * 1.5 + 6 + rt(length(x), df = 2)
+)
+
+sim_lm <- lm(formula =  y ~ x, data = sim1a)
+tidy(sim_lm)
+glance(sim_lm)
+```
+
+```{r}
+intercepts <- c()
+coefficients <- c()
+rsquared <- c()
+adj_rsquared <- c()
+
+for(i in 1:6){
+  sim1a <- tibble(
+  x = rep(1:10, each = 3),
+  y = x * 1.5 + 6 + rt(length(x), df = 2)
+  )
+  sim_lm <- lm(formula =  y ~ x, data = sim1a)
+  tidy_obj <- tidy(sim_lm)
+  glance_obj <- glance(sim_lm)
+  intercepts[i] <- tidy_obj$estimate[1]
+  coefficients[i] <- tidy_obj$estimate[2]
+  rsquared[i] <- glance_obj$r.squared
+  adj_rsquared[i] <- glance_obj$adj.r.squared
+}
+coefficients
+rsquared
+
+ggplot(mapping = aes(x = coefficients, y = rsquared)) +
+  geom_point()
+```
+
+Both coefficient and R-squared values are fluctuating across multiple runs. R-squared more so than coefficient.
