@@ -1,0 +1,60 @@
+---
+title: "COMPSCIX 415.2 Homework 8"
+author: "Shan Valleru"
+date: "3/24/2019"
+output: 
+  html_document:
+    self_contained: true
+    toc: true
+    toc_float: true
+editor_options: 
+  chunk_output_type: console
+---
+
+My Github repository for my assignments can be found at this URL: [https://github.com/svalleru/compscix-415-2-assignments](https://github.com/svalleru/compscix-415-2-assignments)
+
+```{r chunk_name, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(leaflet)
+library(jsonlite)
+```
+
+# Exercise 1
+1.Create an R function that takes as its input argument a city name and creates a slippy leaflet map as its output. The leaflet map should already be zoomed in onto the city that is input into the function and should contain markers for each of the bike station locations, and each marker should show the number of bikes when hovered over by the mouse cursor (see example below). Feel free to add your own flourishes to the map.
+
+On your final html document I want to see the code and **one** slippy map for any of the given cities. **Do not** attempt to put multiple slippy maps on your html file - it may break.
+
+Name your function `map_it`. To pull the data, you will use the fromJSON function (**set the `flatten` argument to TRUE**).
+```{r eval=FALSE}
+### You can use this vector of city names to test your function
+cities <- c('Luxembourg', 'Dublin', 'Brisbane', 'Seville', 'Stockholm', 'Ljubljana')
+```
+```{r}
+base_url <- "https://api.jcdecaux.com/vls/v1/stations?contract="
+api_key <- "03e5bf2112ac7e0f47847d2dcea6e753dd976a02"
+cities <- c('Luxembourg', 'Dublin', 'Brisbane', 'Seville', 'Stockholm', 'Ljubljana')
+
+map_it <- function(city){
+  # construct the full URL with query params and API key
+  full_url <- paste0(base_url, city, "&apiKey=", api_key)
+  
+  # fetch, parse and store JSON data in tabular format
+  bike_data <- fromJSON(full_url, flatten = TRUE)
+  
+  # create leaflet for the city
+  city_leaflet <- leaflet(bike_data) %>% 
+    setView(lng = mean(bike_data$position.lng), lat = mean(bike_data$position.lat), zoom = 14) %>% 
+    addTiles() %>% 
+    addMarkers(~position.lng, ~position.lat, label=~as.character(available_bikes))
+  
+  # return city leaflet
+  return(city_leaflet)
+}
+
+# This for loop based invocation didn't work for some reason!
+# for (city in cities){
+#   map_it(city)
+# }
+
+map_it(cities[6])
+```
