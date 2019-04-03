@@ -129,10 +129,11 @@ diamonds$price_per_carat <- (diamonds$price/diamonds$carat)
   - Do the results make sense? Why?
   - Do we need to be wary of any of these numbers? Why?
 ```{r}
-result <- diamonds %>% filter(price > 10000 & carat < 1.5)
-result
+diamonds %>% group_by(cut) %>%
+  mutate(meet_condition = (price > 10000 & carat < 1.5)) %>%
+  summarize(sum_diamonds = sum(meet_condition), prop_diamonds = mean(meet_condition))
 ```
-Looks like diamonds with lesser cut and carat have higher prices than the diamonds with better carat and cut. It should be the other way around.
+The results make sense in that we expect higher prices by cut in general, even for smaller carat diamonds, however I’d be a little nervous about making any solid conclusions given the low number of Fair and Good diamonds that meet this condition.
 
 # EDA
 Take a look at the `txhousing` data set that is included with the `ggplot2` package and answer these questions:
@@ -164,12 +165,7 @@ Looks like there's a positive correlation
 
 5.What proportion of `sales` is missing for each city?
 ```{r}
-my_tibl <- txhousing %>%
-  mutate(missing_sales = is.na(sales)) %>%
-  group_by(city, missing_sales) %>%
-  summarise(n = n()) %>%
-  mutate(prop = n / sum(n))
-my_tibl[-c(2)]
+txhousing %>% group_by(city) %>% summarize(prop_missing = mean(is.na(sales))) %>% print(n = Inf)
 ```
 
 6.Looking at only the cities and months with greater than 500 sales:
